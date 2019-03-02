@@ -11,59 +11,20 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 /////////////////////////////here
-var user = models.User
+// var user = models.User
+// IMPORT MODULE CONTROLLERS
+var control = require('./controllers/controllerIndex.js')
 
 //read
-app.get("/", (req, res) => {
-  user.findAll().then((data)=>{
-    res.send(data)
-    // console.log(data);
-  })
-})
+app.get("/", control.read)
 //create
-app.post("/user", (req, res) => {
-  user.create({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email
-  }).then((newUser)=>{
-    res.redirect('/')
-    console.log(`new user ${newUser.firstName} has created with id ${newUser.id}`);
-  })
-
-})
+app.post("/user", control.create)
 
 //update
-app.post('/update/:id', (req,res)=>{
-  const id = req.params.id
-  user.findOne({
-    where : {id:id}
-  })
-  .then((data)=>{
-    const befUp = data.firstName
-      data.update({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email
-    })
-    .then((infoUp)=>{
-      console.log(`nama anda telah berubah dari ${befUp} menjadi ${infoUp.firstName}`);
-      res.redirect('/')
-
-    })
-  })
-})
-
+app.put('/update/:id', control.update)
 
 //delete
-app.get("/delete/:id",(req,res)=>{
-  const id = req.params.id
-  user.destroy({
-    where:{id: id}
-  }).then(()=>{
-    res.redirect('/')
-  })
-})
+app.delete("/delete/:id",control.destroy)
 
 
 var port = "3000"
